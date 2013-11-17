@@ -2,7 +2,8 @@ var express = require('express'),
 	passport = require('passport'),
 	YammerStrategy = require('passport-yammer').Strategy,
 	mongoose = require('mongoose'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	yammer = require('yammer');
 
 
 var YAMMER_CONSUMER_KEY = "jDWWRkOyMx1mh9QObsDog";
@@ -39,10 +40,9 @@ passport.deserializeUser(function(obj, done) {
 });
 
 var userSchema = new mongoose.Schema({
-    // name: String,
-    // email: String
     displayName: "string",
-    id: "string"
+    id: "string",
+    accessToken: "string"
 });
 
 
@@ -56,7 +56,7 @@ passport.use(new YammerStrategy({
 		callbackURL: "http://127.0.0.1:3000/auth/yammer/callback"
 	},
 	function(accessToken, refreshToken, profile, done) {
-		User.findOne({ id: profile.id }, function(err, doc) {
+		User.findOneAndUpdate({ id: profile.id }, { accessToken: accessToken }, function(err, doc) {
 			if(doc) {
 				console.log("here's doc: " + doc);
 				done(null, doc);
@@ -99,6 +99,12 @@ app.get('/auth/yammer/callback',
 app.get('/', function(req, res) {
 	console.log("user: " +req.user);
 	return res.send("homepage");
+});
+
+app.get('/relationships', function(req, res) {
+	yammer.apiCall('get', '/relationships.json', { access_token: access_token}, function(err, success, body){
+		console.log("success: " + success);
+	});
 });
 
 app.listen(3000);
