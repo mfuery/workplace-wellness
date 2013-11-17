@@ -3,6 +3,7 @@ var express = require('express'),
 	YammerStrategy = require('passport-yammer').Strategy;
 
 
+var access_token = 'MZMggKzLsAWUTXpbhtLpiQ';
 var YAMMER_CONSUMER_KEY = "jDWWRkOyMx1mh9QObsDog";
 var YAMMER_CONSUMER_SECRET = "KYg0rBLjYZvEKVYjsbTaFgkVapMdgx8svKaGT5Nsl0";
 
