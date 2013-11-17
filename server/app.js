@@ -6,6 +6,7 @@ var express = require('express'),
 	yammer = require('yammer');
 
 
+var access_token = 'MZMggKzLsAWUTXpbhtLpiQ';
 var YAMMER_CONSUMER_KEY = "jDWWRkOyMx1mh9QObsDog";
 var YAMMER_CONSUMER_SECRET = "KYg0rBLjYZvEKVYjsbTaFgkVapMdgx8svKaGT5Nsl0";
 
@@ -102,9 +103,11 @@ app.get('/', function(req, res) {
 });
 
 app.get('/relationships', function(req, res) {
-	yammer.apiCall('get', '/relationships.json', { access_token: access_token}, function(err, success, body){
-		console.log("success: " + success);
+	yammer.apiCall('GET', '/relationships.json', {access_token: access_token}, function(err, resp, body) {
+		// console.log(resp);
+		res.send(body);
 	});
-});
+	// res.send('wait');
+})
 
 app.listen(3000);
