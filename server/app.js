@@ -28,21 +28,26 @@ db.once('open', function callback () {
 // the user ID. Without a database we just attach the whole yammer profile
 // to the session
 passport.serializeUser(function(user, done) {
-	console.log("user: " + user.full_name);
-	done(null, user);
-
+	//console.log(user);	
+	done(null, user._id);
 });
 
 passport.deserializeUser(function(obj, done) {
-	done(null, obj);
+	User.findById(obj, function(error, user) {
+		done(null, user);
+	});
+	
 });
 
-var userSchema = mongoose.Schema({
-    name: String,
-    email: String
-})
+var userSchema = new mongoose.Schema({
+    // name: String,
+    // email: String
+    displayName: "string",
+    id: "string"
+});
 
-var User = mongoose.model('User', userSchema)
+
+var User = mongoose.model('User', userSchema);
 
 
 // TODO we need to define these thing
@@ -52,19 +57,24 @@ passport.use(new YammerStrategy({
 		callbackURL: "http://127.0.0.1:3000/auth/yammer/callback"
 	},
 	function(accessToken, refreshToken, profile, done) {
-		User.create(profile, function(error, success) {
-			if(error) {
-				done(error, false);
-			} 
+		User.findOne({ id: profile.id }, function(err, doc) {
+			if(doc) {
+				console.log("here's doc: " + doc);
+				done(null, doc);
+			}
 			else {
-				_.each(success, function(v, k){
-					console.log(k + " : " + v);
-				}) 
-				console.log(success['_doc'][0]);
-				//console.log(success.job_title);
-				done(null, success);				
+				User.create(profile, function(error, success) {
+					if(error) {
+						done(error, false);
+					} 
+					else {
+						console.log(success);
+						done(null, success);				
+					}
+				});
 			}
 		});
+
 			
 	}) // end yammer strat
 );
@@ -72,6 +82,8 @@ passport.use(new YammerStrategy({
 var app = express();
 
 app.configure(function() {
+	app.use(express.cookieParser());
+	app.use(express.session({ secret: 'moldycheese' }));
 	app.use(passport.initialize());
 	app.use(passport.session());
 });
@@ -84,5 +96,10 @@ app.get('/auth/yammer/callback',
 		// successful authentication, redirect home.
 		res.redirect('/');
 	});
+
+app.get('/', function(req, res) {
+	console.log("user: " +req.user);
+	return res.send("homepage");
+});
 
 app.listen(3000);
