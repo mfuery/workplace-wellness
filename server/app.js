@@ -2,7 +2,8 @@ var express = require('express'),
 	passport = require('passport'),
 	YammerStrategy = require('passport-yammer').Strategy,
 	mongoose = require('mongoose'),
-	_ = require('underscore');
+	_ = require('underscore'),
+	yammer = require('yammer');
 
 
 var access_token = 'MZMggKzLsAWUTXpbhtLpiQ';
@@ -101,5 +102,13 @@ app.get('/', function(req, res) {
 	console.log("user: " +req.user);
 	return res.send("homepage");
 });
+
+app.get('/relationships', function(req, res) {
+	yammer.apiCall('GET', '/relationships.json', {access_token: access_token}, function(err, resp, body) {
+		// console.log(resp);
+		res.send(body);
+	});
+	// res.send('wait');
+})
 
 app.listen(3000);

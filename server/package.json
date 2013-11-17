@@ -8,6 +8,7 @@
 		"passport": "0.1.x",
 		"passport-yammer": "0.1.2",
 		"mongoose": "3.8.0",
-		"underscore": ">= 0.0.0"
+		"underscore": ">= 0.0.0",
+		"yammer": ">= 0.0.0"
 	}
 }
