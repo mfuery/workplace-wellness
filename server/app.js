@@ -17,11 +17,6 @@ db.once('open', function callback () {
   console.log("yay! connected to mongodb");
 });
 
-
-// var user1 = new User({ name: 'Bob', email: 'bob@bob.com' })
-// console.log(user1.name); 
-// console.log(user1.email);
-
 // Passport session setup
 // To support persisten login sessions, Passport needs to be able to
 // to serialize users into and deserialize users out of a session.
@@ -46,9 +41,7 @@ var userSchema = new mongoose.Schema({
     accessToken: "string"
 });
 
-
 var User = mongoose.model('User', userSchema);
-
 
 // TODO we need to define these thing
 passport.use(new YammerStrategy({
@@ -73,9 +66,7 @@ passport.use(new YammerStrategy({
 					}
 				});
 			}
-		});
-
-			
+		});			
 	}) // end yammer strat
 );
 
@@ -108,6 +99,7 @@ app.get('/relationships', function(req, res) {
 		res.send(body);
 	});
 	// res.send('wait');
-})
+});
 
 app.listen(3000);
+
